@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-Signature Demo</title>
+  </head>
+  <body>
+    <header>
+      <h1>E-Signature Demo</h1>
+      <p>Render a PDF in the browser, locate an anchor phrase, and stamp a hand-drawn signature at that position — no server required.</p>
+    </header>
+
+    <div class="simulation-launcher">
+      <button type="button" id="simulate-mobile" class="simulate-mobile-btn">
+        <span class="sim-icon">📱</span>
+        <span>Simulate Mobile Workflow</span>
+      </button>
+      <span class="simulation-launcher-hint">
+        Preview the portrait-locked Android UX with a CSS-rotated signing stage.
+      </span>
+    </div>
+
+    <main class="layout">
+      <section class="pdf-column">
+        <h2>PDF Preview</h2>
+        <div class="pdf-container" id="pdf-container"></div>
+      </section>
+
+      <section class="sign-column">
+        <h2>Signature</h2>
+
+        <div class="sig-pad-wrap">
+          <canvas id="signature-pad" width="500" height="180"></canvas>
+        </div>
+
+        <div class="controls">
+          <label class="field">
+            <span>Anchor phrase</span>
+            <input type="text" id="anchor-input" value="Получил:" autocomplete="off" spellcheck="false" />
+          </label>
+
+          <div class="button-row">
+            <button id="clear-sig" type="button">Clear Signature</button>
+            <button id="find-stamp" type="button" class="primary">Find Anchor &amp; Stamp</button>
+            <button id="download" type="button" class="success">Download Signed PDF</button>
+            <button id="debug-highlight" type="button" class="ghost">Debug: Highlight Anchor</button>
+          </div>
+
+          <label class="field file-picker">
+            <span>Load a custom PDF (optional)</span>
+            <input type="file" id="pdf-file" accept="application/pdf" />
+          </label>
+        </div>
+      </section>
+    </main>
+
+    <section class="log-panel">
+      <h2>Status / Log</h2>
+      <pre id="log" aria-live="polite"></pre>
+    </section>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
