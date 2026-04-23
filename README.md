@@ -31,6 +31,42 @@ Click **📱 Simulate Mobile Workflow** above the desktop layout. A modal mocks 
 - The phone frame is **portrait and stays portrait** — the production app is portrait-locked, so rotating the physical device has no effect.
 - The signing stage is **CSS-rotated 90° clockwise** (not a device orientation change) because a landscape signing area is more natural to draw on than a portrait one.
 - Flow: `signature-pad` → `pdf-view` (with the anchor highlighted in blue) → `stamping` (real `stampSignatureAtAnchor` running) → `uploading` (simulated 1.5s) → `success` → `Download PDF`.
+- A rotated **✕** in the user's visual top-right (pre-rotation stage top-right corner) cancels the flow. If the canvas has strokes a confirmation dialog appears; if empty it closes immediately.
+
+#### The response shape — what the ERP integration will consume
+
+Launching the simulation returns a `Promise` that resolves with one of two shapes, matching what a handover callback would deliver in production:
+
+```js
+// Signed
+{
+  status:    "signed",
+  pdfBytes:  Uint8Array,           // stamped PDF
+  signedAt:  "2026-04-23T17:55:00.000Z",
+  anchor:    { matchedText, pageIndex, x, y }
+}
+
+// Not signed (user cancelled)
+{
+  status:       "not_signed",
+  pdfBytes:     Uint8Array,        // original unstamped PDF
+  reason:       "user_cancelled",
+  cancelledAt:  "2026-04-23T17:55:00.000Z"
+}
+```
+
+Consumption pattern the ERP integration will use:
+
+```js
+const result = await simulateMobileSignatureFlow(pdfBytes, anchorPhrase);
+if (result.status === "signed") {
+  await uploadToERP(result.pdfBytes);
+} else {
+  await logCancellation(result.reason);
+}
+```
+
+In this demo the response is also mirrored to the status panel (full JSON, `pdfBytes` shown as `<Uint8Array, N bytes>`) and a toast at the top of the viewport — green for signed, amber for cancelled — so you can read the shape directly while clicking through the flow.
 
 ### On the rotated canvas
 

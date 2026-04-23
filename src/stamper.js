@@ -133,6 +133,7 @@ export async function stampSignatureAtAnchor({
     pdfBytes: outBytes,
     placedAt,
     matchedText: anchor.matchedText,
+    anchor,
   };
 }
 

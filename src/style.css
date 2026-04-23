@@ -672,6 +672,209 @@ button.ghost:hover {
   width: 100%;
 }
 
+/* ---------- Close button: rotated (state A) ---------- */
+
+/*
+ * Placed at the pre-rotation top-right corner of .rotated-stage — which,
+ * after the stage's 90° CW rotation and from the user's tilted-head
+ * perspective (right ear toward shoulder), lands in the user's visual
+ * top-right corner. It inherits the stage's rotation automatically, so
+ * the ✕ glyph reads upright for the user.
+ */
+.rotated-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(20, 22, 32, 0.85);
+  color: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.rotated-close-btn:hover,
+.rotated-close-btn:active {
+  background: rgba(30, 32, 44, 0.95);
+  color: #fff;
+}
+
+/* ---------- Close button: upright (state B, pdf-view) ---------- */
+
+.mobile-pdf-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(28, 30, 42, 0.92);
+  color: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.mobile-pdf-close-btn:hover,
+.mobile-pdf-close-btn:active {
+  background: rgba(40, 42, 58, 0.98);
+  color: #fff;
+}
+
+/* Adjust PDF scroller so it doesn't slide under the close button. */
+.mobile-state[data-state='pdf-view'] .mobile-pdf-scroller {
+  inset: 70px 0 88px 0;
+}
+
+/* Outer ✕ hides during stamping/uploading — can't cancel mid-commit. */
+.mobile-sim-close.hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---------- Cancel-confirmation dialog (upright, above all states) ---------- */
+
+.cancel-confirm-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 6, 12, 0.72);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 20px;
+}
+
+.cancel-confirm-overlay.visible {
+  display: flex;
+}
+
+.cancel-confirm-card {
+  background: #1c1e28;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 22px 22px 18px;
+  width: 100%;
+  max-width: 300px;
+  color: #edeef3;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+
+.cancel-confirm-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.cancel-confirm-body {
+  font-size: 14px;
+  color: #b4b8c4;
+  line-height: 1.45;
+  margin-bottom: 18px;
+}
+
+.cancel-confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cancel-confirm-actions button {
+  flex: 1;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: transparent;
+  color: #edeef3;
+  transition: background 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cancel-confirm-actions button:active {
+  transform: scale(0.97);
+}
+
+.cancel-confirm-actions .cancel-confirm-back {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.cancel-confirm-actions .cancel-confirm-back:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.cancel-confirm-actions .cancel-confirm-cancel {
+  background: #d04343;
+  border-color: #d04343;
+  color: #fff;
+}
+
+.cancel-confirm-actions .cancel-confirm-cancel:hover {
+  background: #b63737;
+  border-color: #b63737;
+}
+
+/* ---------- Toast (top of viewport, outside phone) ---------- */
+
+.mobile-toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translate(-50%, -140%);
+  min-width: 280px;
+  max-width: 480px;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+  z-index: 2000;
+  transition: transform 0.28s cubic-bezier(0.22, 0.9, 0.36, 1),
+    opacity 0.28s ease;
+  opacity: 0;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+.mobile-toast.visible {
+  transform: translate(-50%, 0);
+  opacity: 1;
+}
+
+.mobile-toast-success {
+  background: linear-gradient(135deg, #10b981, #0ea371);
+}
+
+.mobile-toast-warning {
+  background: linear-gradient(135deg, #e4932f, #c7751c);
+}
+
 /* ---------- Responsive (desktop -> narrow) ---------- */
 
 @media (max-width: 960px) {

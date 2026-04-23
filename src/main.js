@@ -189,15 +189,62 @@ log(`Anchor phrase default: "${anchorInput.value}"`);
   }
 })();
 
-initMobileSimulation({
-  triggerButton: document.getElementById('simulate-mobile'),
+const mobileSim = initMobileSimulation({
   getCurrentPdfBytes: () => currentPdfBytes,
   getAnchorPhrase: () => anchorInput.value.trim(),
   log,
+});
+
+document.getElementById('simulate-mobile').addEventListener('click', async () => {
+  try {
+    const response = await mobileSim.launch();
+    handleMobileResponse(response);
+  } catch (err) {
+    log(`Mobile simulation error: ${err.message}`, 'error');
+  }
 });
 
 // Auto-open the mobile sim when the URL carries #mobile — useful for
 // screenshots / headless checks. No-op in normal browsing.
 if (window.location.hash === '#mobile') {
   document.getElementById('simulate-mobile').click();
+}
+
+function handleMobileResponse(response) {
+  // Show a toast at the top of the viewport.
+  if (response.status === 'signed') {
+    showToast('success', '✓ Документът е подписан');
+  } else {
+    showToast('warning', '⚠ Документът не е подписан (отказан от потребителя)');
+  }
+
+  // Full response as formatted JSON in the status panel. pdfBytes is
+  // replaced with a summary so the log stays readable.
+  const display = {
+    ...response,
+    pdfBytes: `<Uint8Array, ${response.pdfBytes.byteLength} bytes>`,
+  };
+  const json = JSON.stringify(display, null, 2);
+  log(`=== MOBILE WORKFLOW RESPONSE ===\n${json}`);
+}
+
+// ---- Toast helper ----
+
+let toastEl = null;
+let toastTimer = null;
+
+function showToast(kind, message) {
+  if (!toastEl) {
+    toastEl = document.createElement('div');
+    toastEl.className = 'mobile-toast';
+    document.body.appendChild(toastEl);
+  }
+  clearTimeout(toastTimer);
+
+  toastEl.className = `mobile-toast mobile-toast-${kind} visible`;
+  toastEl.textContent = message;
+
+  toastTimer = setTimeout(() => {
+    toastEl.classList.remove('visible');
+  }, 4000);
 }
